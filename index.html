@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Firestore CRUD</title>
+</head>
+<body>
+  <h1>Firestore CRUD Operations</h1>
+  
+  <h2>Add or Update Object</h2>
+  <textarea id="jsonInput" rows="5" cols="50" placeholder='{"obj_id":"xy234", "name":"joe"}'></textarea><br>
+  <button onclick="addObject()">Submit</button>
+
+  <h2>Fetch Object</h2>
+  <input type="text" id="fetchObjId" placeholder="Enter obj_id"><br>
+  <button onclick="getObject()">Fetch</button>
+  <pre id="fetchResult"></pre>
+
+  <h2>Delete Object</h2>
+  <input type="text" id="deleteObjId" placeholder="Enter obj_id"><br>
+  <button onclick="deleteObject()">Delete</button>
+
+  <h2>Fetch All Objects</h2>
+  <button onclick="getAllObjects()">Fetch All</button>
+  <pre id="allObjectsResult"></pre>
+
+  <script>
+    const addObject = async () => {
+      const jsonInput = document.getElementById('jsonInput').value;
+      const data = JSON.parse(jsonInput);
+      const response = await fetch('https://REGION-PROJECT_ID.cloudfunctions.net/addObject', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      alert(await response.text());
+    };
+
+    const getObject = async () => {
+      const objId = document.getElementById('fetchObjId').value;
+      const response = await fetch(`https://REGION-PROJECT_ID.cloudfunctions.net/getObject?obj_id=${objId}`);
+      const data = await response.json();
+      document.getElementById('fetchResult').textContent = JSON.stringify(data, null, 2);
+    };
+
+    const deleteObject = async () => {
+      const objId = document.getElementById('deleteObjId').value;
+      const response = await fetch(`https://REGION-PROJECT_ID.cloudfunctions.net/deleteObject?obj_id=${objId}`, {
+        method: 'DELETE'
+      });
+      alert(await response.text());
+    };
+
+    const getAllObjects = async () => {
+      const response = await fetch('https://REGION-PROJECT_ID.cloudfunctions.net/getAllObjects');
+      const data = await response.json();
+      document.getElementById('allObjectsResult').textContent = JSON.stringify(data, null, 2);
+    };
+  </script>
+</body>
+</html>

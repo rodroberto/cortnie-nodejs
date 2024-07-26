@@ -1,8 +1,16 @@
 require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
+const admin = require('firebase-admin');
+const serviceAccount = require('./cortnie-firebase.json');
 const app = express();
 const port = process.env.PORT || 3000;
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+
+const db = admin.firestore();
 
 app.use(bodyParser.json());
 
